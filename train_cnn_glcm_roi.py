@@ -8,7 +8,6 @@ import numpy as np
 from pathlib import Path
 from tqdm import tqdm
 import joblib
-import matplotlib.pyplot as plt
 
 from skimage.feature import graycomatrix, graycoprops
 from skimage import exposure
