@@ -802,15 +802,23 @@
 
 #-------- for mapping--------
 
+import os
+
+# Reduce TensorFlow resource usage
+os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
+os.environ["OMP_NUM_THREADS"] = "1"
+os.environ["TF_NUM_INTRAOP_THREADS"] = "1"
+os.environ["TF_NUM_INTEROP_THREADS"] = "1"
+
 from flask import Flask, request, render_template, redirect, session, send_file
 import sqlite3
 from datetime import datetime
-import os
 import csv
 import numpy as np
 import cv2
 import joblib
 import random
+
 from tensorflow.keras.models import load_model
 from werkzeug.utils import secure_filename
 
