@@ -958,7 +958,7 @@ def predict():
     roi_filename = "roi_" + filename
     roi_path = os.path.join(roi_folder, roi_filename)
 
-    roi_resized = cv2.resize(roi, (128,128)), interpolation=cv2.INTER_CUBIC)
+    roi_resized = cv2.resize(roi, (128,128), interpolation=cv2.INTER_CUBIC)
 
     cv2.imwrite(roi_path, roi_resized)
 
@@ -991,23 +991,22 @@ def predict():
     cv2.imwrite(annotated_path, img_color)
 
     # ================= FEATURE EXTRACTION =================
-glcm = []
+    glcm = []
+    cnn = []
 
-for r in rois:
-    glcm.append(extract_glcm_features(r))
+    for r in rois:
+        glcm.append(extract_glcm_features(r))
+        cnn.append(extract_cnn_feature_from_roi(r, cnn_model))
 
-glcm = np.mean(glcm,0).reshape(1,-1)
+    fused = np.hstack([
+        np.mean(cnn,0),
+        np.mean(glcm,0)
+    ]).reshape(1,-1)
 
-fused = scaler.transform(glcm)
+    fused = scaler.transform(fused)
 
-pred = svm.predict(fused)[0]
-
-    fused=np.hstack([np.mean(cnn,0),np.mean(glcm,0)]).reshape(1,-1)
-
-    fused=scaler.transform(fused)
-
-    pred=svm.predict(fused)[0]
-    label=LABELS[pred]
+    pred = svm.predict(fused)[0]
+    label = LABELS[pred]
 
     if label=="Normal":
         prob=random.uniform(0.000,0.400)
@@ -1016,7 +1015,7 @@ pred = svm.predict(fused)[0]
     else:
         prob=random.uniform(0.701,1.000)
 
-    prob=round(prob,5)
+    prob = round(prob,5)
 
     return render_template(
         "index.html",
