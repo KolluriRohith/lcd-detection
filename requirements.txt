@@ -9,3 +9,4 @@ joblib
 gunicorn
 tqdm
 scikit-image
+matplotlib
