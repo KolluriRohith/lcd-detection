@@ -878,6 +878,24 @@ def login_post():
     return render_template("login.html", error="Invalid Username or Password")
 
 
+# ================= REGISTER =================
+@app.route('/register')
+def register():
+    return render_template("register.html")
+
+
+@app.route('/register_post', methods=['POST'])
+def register_post():
+
+    u = request.form['username']
+    p = request.form['password']
+
+    conn = sqlite3.connect('users.db')
+    conn.execute("INSERT INTO users VALUES (?,?)", (u, p))
+    conn.commit()
+    conn.close()
+
+    return redirect('/')
 # ================= HOME =================
 @app.route('/home')
 def home():
