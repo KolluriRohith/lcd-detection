@@ -992,12 +992,14 @@ def predict():
 
     # ================= FEATURE EXTRACTION =================
     glcm = []
+    cnn = []
+    r = rois[0]
 
-    for r in rois:
-        glcm.append(extract_glcm_features(r))
+    glcm.append(extract_glcm_features(r))
+    cnn.append(extract_cnn_feature_from_roi(r, cnn_model))
 
     # Skip CNN to avoid heavy MobileNet inference
-    cnn = [np.zeros(1280)]
+    #cnn = [np.zeros(1280)]
 
     fused = np.hstack([
         np.mean(cnn,0),
