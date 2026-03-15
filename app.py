@@ -992,13 +992,12 @@ def predict():
 
     # ================= FEATURE EXTRACTION =================
     glcm = []
-    cnn = []
 
     for r in rois:
         glcm.append(extract_glcm_features(r))
 
-# Skip CNN to avoid heavy MobileNet inference
-cnn = [np.zeros(1280)]
+    # Skip CNN to avoid heavy MobileNet inference
+    cnn = [np.zeros(1280)]
 
     fused = np.hstack([
         np.mean(cnn,0),
@@ -1010,12 +1009,14 @@ cnn = [np.zeros(1280)]
     pred = svm.predict(fused)[0]
     label = LABELS[pred]
 
-    if label=="Normal":
-        prob=random.uniform(0.000,0.400)
-    elif label=="Benign":
-        prob=random.uniform(0.401,0.700)
+    if label == "Normal":
+        prob = random.uniform(0.000,0.400)
+
+    elif label == "Benign":
+        prob = random.uniform(0.401,0.700)
+
     else:
-        prob=random.uniform(0.701,1.000)
+        prob = random.uniform(0.701,1.000)
 
     prob = round(prob,5)
 
