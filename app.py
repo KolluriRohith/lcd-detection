@@ -947,6 +947,7 @@ def predict():
     mask = segment_lung_mask(img_gray)
 
     rois = extract_candidate_rois(img_gray, mask)
+    rois = rois[:1]
 
     if not rois:
         rois = [lung_roi_fallback(img_gray, mask)]
@@ -957,7 +958,7 @@ def predict():
     roi_filename = "roi_" + filename
     roi_path = os.path.join(roi_folder, roi_filename)
 
-    roi_resized = cv2.resize(roi, (256,256), interpolation=cv2.INTER_CUBIC)
+    roi_resized = cv2.resize(roi, (128,128)), interpolation=cv2.INTER_CUBIC)
 
     cv2.imwrite(roi_path, roi_resized)
 
@@ -990,12 +991,16 @@ def predict():
     cv2.imwrite(annotated_path, img_color)
 
     # ================= FEATURE EXTRACTION =================
-    glcm=[]
-    cnn=[]
+glcm = []
 
-    for r in rois:
-        glcm.append(extract_glcm_features(r))
-        cnn.append(extract_cnn_feature_from_roi(r, cnn_model))
+for r in rois:
+    glcm.append(extract_glcm_features(r))
+
+glcm = np.mean(glcm,0).reshape(1,-1)
+
+fused = scaler.transform(glcm)
+
+pred = svm.predict(fused)[0]
 
     fused=np.hstack([np.mean(cnn,0),np.mean(glcm,0)]).reshape(1,-1)
 
