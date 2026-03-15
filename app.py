@@ -958,7 +958,7 @@ def predict():
     roi_filename = "roi_" + filename
     roi_path = os.path.join(roi_folder, roi_filename)
 
-    roi_resized = cv2.resize(roi, (128,128), interpolation=cv2.INTER_CUBIC)
+    roi_resized = cv2.resize(roi, (64,64), interpolation=cv2.INTER_CUBIC)
 
     cv2.imwrite(roi_path, roi_resized)
 
